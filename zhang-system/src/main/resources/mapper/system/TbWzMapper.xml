@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TbWzMapper">
+    
+    <resultMap type="TbWz" id="TbWzResult">
+        <result property="id"    column="id"    />
+        <result property="wzName"    column="wz_name"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="num"    column="num"    />
+    </resultMap>
+
+    <sql id="selectTbWzVo">
+        select id, wz_name, type_name, num from tb_wz
+    </sql>
+
+    <select id="selectTbWzList" parameterType="TbWz" resultMap="TbWzResult">
+        <include refid="selectTbWzVo"/>
+        <where>  
+            <if test="wzName != null  and wzName != ''"> and wz_name like concat('%', #{wzName}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="num != null  and num != ''"> and num = #{num}</if>
+        </where>
+    </select>
+    
+    <select id="selectTbWzById" parameterType="Long" resultMap="TbWzResult">
+        <include refid="selectTbWzVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTbWz" parameterType="TbWz">
+        insert into tb_wz
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="wzName != null and wzName != ''">wz_name,</if>
+            <if test="typeName != null and typeName != ''">type_name,</if>
+            <if test="num != null and num != ''">num,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="wzName != null and wzName != ''">#{wzName},</if>
+            <if test="typeName != null and typeName != ''">#{typeName},</if>
+            <if test="num != null and num != ''">#{num},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbWz" parameterType="TbWz">
+        update tb_wz
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wzName != null and wzName != ''">wz_name = #{wzName},</if>
+            <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="num != null and num != ''">num = #{num},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbWzById" parameterType="Long">
+        delete from tb_wz where id = #{id}
+    </delete>
+
+    <delete id="deleteTbWzByIds" parameterType="String">
+        delete from tb_wz where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

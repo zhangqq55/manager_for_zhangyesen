@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TbCfMapper">
+    
+    <resultMap type="TbCf" id="TbCfResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="cfContent"    column="cf_content"    />
+        <result property="cfTime"    column="cf_time"    />
+        <result property="cfCraete"    column="cf_craete"    />
+    </resultMap>
+
+    <sql id="selectTbCfVo">
+        select id, user_id, cf_content, cf_time, cf_craete from tb_cf
+    </sql>
+
+    <select id="selectTbCfList" parameterType="TbCf" resultMap="TbCfResult">
+        <include refid="selectTbCfVo"/>
+        <where>  
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="cfContent != null  and cfContent != ''"> and cf_content = #{cfContent}</if>
+            <if test="cfTime != null "> and cf_time = #{cfTime}</if>
+            <if test="cfCraete != null  and cfCraete != ''"> and cf_craete = #{cfCraete}</if>
+        </where>
+    </select>
+    
+    <select id="selectTbCfById" parameterType="Long" resultMap="TbCfResult">
+        <include refid="selectTbCfVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTbCf" parameterType="TbCf" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_cf
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="cfContent != null and cfContent != ''">cf_content,</if>
+            <if test="cfTime != null">cf_time,</if>
+            <if test="cfCraete != null">cf_craete,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="cfContent != null and cfContent != ''">#{cfContent},</if>
+            <if test="cfTime != null">#{cfTime},</if>
+            <if test="cfCraete != null">#{cfCraete},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbCf" parameterType="TbCf">
+        update tb_cf
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="cfContent != null and cfContent != ''">cf_content = #{cfContent},</if>
+            <if test="cfTime != null">cf_time = #{cfTime},</if>
+            <if test="cfCraete != null">cf_craete = #{cfCraete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbCfById" parameterType="Long">
+        delete from tb_cf where id = #{id}
+    </delete>
+
+    <delete id="deleteTbCfByIds" parameterType="String">
+        delete from tb_cf where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

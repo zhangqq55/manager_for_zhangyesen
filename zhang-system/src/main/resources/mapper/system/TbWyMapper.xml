@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TbWyMapper">
+    
+    <resultMap type="TbWy" id="TbWyResult">
+        <result property="id"    column="id"    />
+        <result property="wyNumber"    column="wy_number"    />
+        <result property="wyName"    column="wy_name"    />
+        <result property="wyPhone"    column="wy_phone"    />
+    </resultMap>
+
+    <sql id="selectTbWyVo">
+        select id, wy_number, wy_name, wy_phone from tb_wy
+    </sql>
+
+    <select id="selectTbWyList" parameterType="TbWy" resultMap="TbWyResult">
+        <include refid="selectTbWyVo"/>
+        <where>  
+            <if test="wyNumber != null  and wyNumber != ''"> and wy_number = #{wyNumber}</if>
+            <if test="wyName != null  and wyName != ''"> and wy_name like concat('%', #{wyName}, '%')</if>
+            <if test="wyPhone != null  and wyPhone != ''"> and wy_phone = #{wyPhone}</if>
+        </where>
+    </select>
+    
+    <select id="selectTbWyById" parameterType="Long" resultMap="TbWyResult">
+        <include refid="selectTbWyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTbWy" parameterType="TbWy">
+        insert into tb_wy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="wyNumber != null and wyNumber != ''">wy_number,</if>
+            <if test="wyName != null and wyName != ''">wy_name,</if>
+            <if test="wyPhone != null and wyPhone != ''">wy_phone,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="wyNumber != null and wyNumber != ''">#{wyNumber},</if>
+            <if test="wyName != null and wyName != ''">#{wyName},</if>
+            <if test="wyPhone != null and wyPhone != ''">#{wyPhone},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbWy" parameterType="TbWy">
+        update tb_wy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wyNumber != null and wyNumber != ''">wy_number = #{wyNumber},</if>
+            <if test="wyName != null and wyName != ''">wy_name = #{wyName},</if>
+            <if test="wyPhone != null and wyPhone != ''">wy_phone = #{wyPhone},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbWyById" parameterType="Long">
+        delete from tb_wy where id = #{id}
+    </delete>
+
+    <delete id="deleteTbWyByIds" parameterType="String">
+        delete from tb_wy where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TbLqMapper">
+
+    <resultMap type="TbLq" id="TbLqResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="wzId"    column="wz_id"    />
+        <result property="lqNum"    column="lq_num"    />
+        <result property="lqTime"    column="lq_time"    />
+        <result property="wzName"    column="wz_name"    />
+    </resultMap>
+
+    <sql id="selectTbLqVo">
+        select tb_lq.id, user_id, user_name, wz_id, lq_num, lq_time,wz_name from tb_lq,tb_wz
+    </sql>
+
+    <select id="selectTbLqList" parameterType="TbLq" resultMap="TbLqResult">
+        <include refid="selectTbLqVo"/>
+        <where>
+            and  wz_id=tb_wz.id
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="wzId != null "> and wz_id = #{wzId}</if>
+            <if test="lqNum != null "> and lq_num = #{lqNum}</if>
+            <if test="lqTime != null "> and lq_time = #{lqTime}</if>
+        </where>
+    </select>
+
+    <select id="selectTbLqById" parameterType="Long" resultMap="TbLqResult">
+        <include refid="selectTbLqVo"/>
+        where id = #{id} and  wz_id=tb_wz.id
+    </select>
+
+    <insert id="insertTbLq" parameterType="TbLq">
+        insert into tb_lq
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="wzId != null">wz_id,</if>
+            <if test="lqNum != null">lq_num,</if>
+            <if test="lqTime != null">lq_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="wzId != null">#{wzId},</if>
+            <if test="lqNum != null">#{lqNum},</if>
+            <if test="lqTime != null">#{lqTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbLq" parameterType="TbLq">
+        update tb_lq
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="wzId != null">wz_id = #{wzId},</if>
+            <if test="lqNum != null">lq_num = #{lqNum},</if>
+            <if test="lqTime != null">lq_time = #{lqTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbLqById" parameterType="Long">
+        delete from tb_lq where id = #{id}
+    </delete>
+
+    <delete id="deleteTbLqByIds" parameterType="String">
+        delete from tb_lq where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

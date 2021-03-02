@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TbDonateerMapper">
+    
+    <resultMap type="TbDonateer" id="TbDonateerResult">
+        <result property="id"    column="id"    />
+        <result property="donateNumber"    column="donate_number"    />
+        <result property="donateName"    column="donate_name"    />
+        <result property="sex"    column="sex"    />
+        <result property="csDate"    column="cs_date"    />
+    </resultMap>
+
+    <sql id="selectTbDonateerVo">
+        select id, donate_number, donate_name, sex, cs_date from tb_donateer
+    </sql>
+
+    <select id="selectTbDonateerList" parameterType="TbDonateer" resultMap="TbDonateerResult">
+        <include refid="selectTbDonateerVo"/>
+        <where>  
+            <if test="donateNumber != null  and donateNumber != ''"> and donate_number = #{donateNumber}</if>
+            <if test="donateName != null  and donateName != ''"> and donate_name like concat('%', #{donateName}, '%')</if>
+            <if test="sex != null "> and sex = #{sex}</if>
+            <if test="csDate != null "> and cs_date = #{csDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTbDonateerById" parameterType="Long" resultMap="TbDonateerResult">
+        <include refid="selectTbDonateerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTbDonateer" parameterType="TbDonateer">
+        insert into tb_donateer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="donateNumber != null">donate_number,</if>
+            <if test="donateName != null and donateName != ''">donate_name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="csDate != null">cs_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="donateNumber != null">#{donateNumber},</if>
+            <if test="donateName != null and donateName != ''">#{donateName},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="csDate != null">#{csDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTbDonateer" parameterType="TbDonateer">
+        update tb_donateer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="donateNumber != null">donate_number = #{donateNumber},</if>
+            <if test="donateName != null and donateName != ''">donate_name = #{donateName},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="csDate != null">cs_date = #{csDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbDonateerById" parameterType="Long">
+        delete from tb_donateer where id = #{id}
+    </delete>
+
+    <delete id="deleteTbDonateerByIds" parameterType="String">
+        delete from tb_donateer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
